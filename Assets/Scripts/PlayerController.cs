@@ -3,22 +3,29 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 	float originalY = 0f;
-
+	float borderWidth = 0;
+	Vector3 screen;
 	void Start () {
 		originalY = transform.position.y;
-	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-//		Debug.logger.Log("finger")
-//		float clampedx = Mathf.Clamp (mouse.x, size, Screen.width-size);
-		MouseControl();
+		var v3 = new Vector3 (Screen.width, Screen.height, Camera.main.nearClipPlane);
+		screen = Camera.main.ScreenToWorldPoint (v3);
+		borderWidth = GetComponent<EdgeCollider2D> ().bounds.extents.x;
 	}
 
-	void MouseControl() {
+	// Update is called once per frame
+	void FixedUpdate () {
+		Vector3 mpos = getMouseWorldPoint ();
+		MouseControl(mpos);
+	}
+
+	Vector3 getMouseWorldPoint() {
 		var v3 = Input.mousePosition;
 		v3.z = Camera.main.nearClipPlane;
-		v3 = Camera.main.ScreenToWorldPoint(v3);
-		transform.position = new Vector3(v3.x, originalY, v3.z);
+		return Camera.main.ScreenToWorldPoint(v3);
+	}
+
+	void MouseControl(Vector3 pos) {
+		float clampedx = Mathf.Clamp (pos.x, -screen.x+borderWidth, screen.x-borderWidth);
+		transform.position = new Vector3(clampedx, originalY, pos.z);
 	}
 }
