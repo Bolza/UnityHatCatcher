@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - Scenery
   - Damager
+  - BowlingBall
   layers:
   - Default
   - TransparentFX

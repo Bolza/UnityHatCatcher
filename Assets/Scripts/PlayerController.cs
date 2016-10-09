@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		Vector3 mpos = getMouseWorldPoint ();
-		MouseControl(mpos);
+//		Vector3 mpos = getMouseWorldPoint ();
+		AxisMouseControl ();
 	}
 
 	Vector3 getMouseWorldPoint() {
@@ -24,8 +24,15 @@ public class PlayerController : MonoBehaviour {
 		return Camera.main.ScreenToWorldPoint(v3);
 	}
 
-	void MouseControl(Vector3 pos) {
+	void AbsoluteMouseControl(Vector3 pos) {
 		float clampedx = Mathf.Clamp (pos.x, -screen.x+borderWidth, screen.x-borderWidth);
 		transform.position = new Vector3(clampedx, originalY, pos.z);
 	}
+
+	void AxisMouseControl() {
+		float x = transform.position.x + (Input.GetAxis ("MouseX") * Time.deltaTime);
+		x = Mathf.Clamp (x, -screen.x+borderWidth, screen.x-borderWidth);
+		transform.position = new Vector3(x, originalY, 1);
+	}
+
 }

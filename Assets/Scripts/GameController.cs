@@ -4,7 +4,9 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 	Vector3 screen;
-	public GameObject BowlingBall;
+	int spawnedItems = 0;
+
+	public GameObject[] balls;
 	public float timeLeft;
 	public Text timerText; 
 	public Text scoreText; 
@@ -24,24 +26,24 @@ public class GameController : MonoBehaviour {
 	}
 
 	public IEnumerator Spawn() {
-		yield return new WaitForSeconds (2);
+//		yield return new WaitForSeconds (2);
 		while (timeLeft > 0) {
 			SpawnBall ();
-			yield return new WaitForSeconds (Random.Range (0.5f, 1.5f));
-		}
-		if (timeLeft <= 0) {
-			GameOver ();
+			yield return new WaitForSeconds (Random.Range (0.1f, 1f));
 		}
 	}
 
 	void SpawnBall() {
 		float x = Random.Range (-screen.x, screen.x);
 		Vector3 sposition = new Vector3 (x, screen.y+2, screen.z);
-		GameObject ball = (GameObject)Instantiate (BowlingBall, sposition , Quaternion.identity);
+		Instantiate (balls[Random.Range(0,balls.Length)], sposition , Quaternion.identity);
 	}
 
 	void FixedUpdate() {
 		timeUpdater ();
+		if (timeLeft <= 0 && spawnedItems == 0) {
+			GameOver ();
+		}
 	}
 
 	void timeUpdater() {
@@ -53,7 +55,14 @@ public class GameController : MonoBehaviour {
 		gameOverLabel.SetActive (true);
 		restartButton.SetActive (true);
 		mainPlayer.SetActive (false);
+	}
 
+	public void addSpawnedItem(){
+		spawnedItems++;
+		
+	}
+	public void removeSpawnedItem(){
+		spawnedItems--;
 	}
 
 	public void addScore(int score) {
